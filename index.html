@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Matching Game — Neon Edition</title>
+  <link rel="stylesheet" href="style.css?v=3.2">
+</head>
+<body>
+<main>
+  <div class="sparkles" aria-hidden="true">✦ ✧ ✦</div>
+  <h1>MATCHING GAME</h1>
+  <p>NEON EDITION · اختبر ذاكرتك وطابق البطاقات!</p>
+  <section class="panel">
+    <div class="modes" aria-label="وضع اللعب">
+      <button data-mode="solo" class="active">👤 لعب فردي</button>
+      <button data-mode="ai">🤖 ضد الكمبيوتر</button>
+      <button data-mode="online">🌐 لعب أونلاين</button>
+    </div>
+    <div class="modes ai-options" id="ai-options" hidden aria-label="ذكاء الكمبيوتر">
+      <button data-ai="easy">ذكاء سهل</button>
+      <button data-ai="medium" class="active">ذكاء متوسط</button>
+      <button data-ai="hard">ذكاء صعب</button>
+    </div>
+    <div class="modes difficulty" aria-label="الصعوبة">
+      <button data-level="easy" class="active">سهل · 12 بطاقة</button>
+      <button data-level="medium">متوسط · 16 بطاقة</button>
+      <button data-level="hard">صعب · 24 بطاقة</button>
+    </div>
+    <div class="stats" style="margin-top:16px">
+      <div class="stat"><strong id="time">00:00</strong><span>الوقت المتبقي</span></div>
+      <div class="stat"><strong id="moves">0</strong><span>المحاولات</span></div>
+      <div class="stat"><strong id="pairs">0/12</strong><span>البطاقات</span></div>
+    </div>
+  </section>
+
+  <section id="online-panel" class="panel online-panel" hidden aria-label="اللعب الأونلاين">
+    <div id="online-setup">
+      <h2>🌐 اللعب مع صديق</h2>
+      <p class="online-tip">كل لاعب من جهاز مختلف. أنشئ غرفة وأرسل رمزها لصديقك.</p>
+      <label for="online-name">اسم اللاعب</label>
+      <input id="online-name" type="text" maxlength="24" placeholder="اكتب اسمك" autocomplete="nickname">
+      <div class="online-actions">
+        <button id="online-create" class="primary">＋ إنشاء غرفة</button>
+        <span class="online-or">أو</span>
+        <input id="online-code-input" type="text" maxlength="6" placeholder="رمز الغرفة" inputmode="text" autocomplete="off" autocapitalize="characters" dir="ltr" aria-label="رمز الغرفة">
+        <button id="online-join">دخول الغرفة</button>
+      </div>
+    </div>
+    <div id="online-lobby" hidden>
+      <h2 id="online-lobby-title">🎮 غرفة اللعب</h2>
+      <div class="room-code-row">
+        <span>رمز الغرفة:</span><strong id="online-code" dir="ltr">——</strong>
+        <button id="online-copy">📋 نسخ الرمز</button>
+      </div>
+      <p id="online-players" class="online-players"></p>
+      <p id="online-lobby-info" class="online-tip"></p>
+      <div class="online-actions">
+        <button id="online-start" class="primary" hidden>▶ بدء المباراة</button>
+        <button id="online-rematch" class="primary" hidden>↻ مباراة جديدة</button>
+        <button id="online-leave">🚪 مغادرة الغرفة</button>
+      </div>
+    </div>
+    <p class="online-feedback" id="online-feedback" role="status" aria-live="polite"></p>
+  </section>
+
+  <div class="scoreboard" id="scoreboard" hidden>
+    <div class="score you"><span id="human-label">👤 أنت</span><strong id="human-score">0</strong></div>
+    <div class="score bot"><span id="ai-label">🤖 الكمبيوتر</span><strong id="ai-score">0</strong></div>
+    <div class="turn" id="turn">الدور: أنت</div>
+  </div>
+  <div class="status" id="status" role="status">احفظ أماكن البطاقات ثم ابدأ!</div>
+  <p id="deck-theme" class="deck-theme" aria-live="polite">✨ بطاقات الجولة: رموز وصور</p>
+  <div class="board" id="board" aria-label="بطاقات الذاكرة"></div>
+  <div class="actions" id="local-actions">
+    <button class="primary" id="restart">↻ لعبة جديدة</button>
+    <button id="sound" aria-pressed="true">🔊 الصوت: تشغيل</button>
+    <button id="peek">👁 نظرة سريعة (مرة واحدة)</button>
+  </div>
+  <div class="actions" id="online-sound-actions" hidden>
+    <button id="online-sound" aria-pressed="true">🔊 الصوت: تشغيل</button>
+  </div>
+  <p class="note" id="game-note">في اللعب الفردي الوقت محدود حسب المستوى. في وضع الكمبيوتر تتناوب الأدوار بعد عدم التطابق، والفائز من يطابق أكبر عدد من البطاقات. لا توجد موسيقى خلفية.</p>
+  <p id="best" class="note"></p>
+</main>
+<script src="script.js?v=3.2"></script>
+<script src="online.js?v=3.3"></script>
+</body>
+</html>
