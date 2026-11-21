@@ -1,0 +1,110 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "rooms": {
+      "$room": {
+        ".read": "auth != null && $room.matches(/^[A-HJ-NP-Z2-9]{6}$/)",
+        ".write": "auth != null && ((!data.exists() && newData.exists() && newData.child('host/uid').val() === auth.uid && newData.child('game/phase').val() === 'waiting' && !newData.child('guest').exists()) || (data.exists() && !newData.exists() && data.child('host/uid').val() === auth.uid))",
+        ".validate": "newData.hasChildren(['host', 'level', 'game', 'createdAt']) && ((newData.child('level').val() === 'easy' && newData.child('game/deck/11').exists() && !newData.child('game/deck/12').exists()) || (newData.child('level').val() === 'medium' && newData.child('game/deck/15').exists() && !newData.child('game/deck/16').exists()) || (newData.child('level').val() === 'hard' && newData.child('game/deck/23').exists() && !newData.child('game/deck/24').exists()))",
+        "host": {
+          ".validate": "newData.hasChildren(['uid', 'name']) && newData.child('uid').isString() && newData.child('uid').val() === auth.uid && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 24",
+          "uid": {
+            ".validate": "newData.isString()"
+          },
+          "name": {
+            ".validate": "newData.isString()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "guest": {
+          ".write": "auth != null && ((!data.exists() && newData.exists() && newData.child('uid').val() === auth.uid && root.child('rooms/' + $room + '/game/phase').val() === 'waiting' && root.child('rooms/' + $room + '/host/uid').val() !== auth.uid) || (data.exists() && !newData.exists() && data.child('uid').val() === auth.uid && root.child('rooms/' + $room + '/game/phase').val() === 'waiting'))",
+          ".validate": "newData.hasChildren(['uid', 'name']) && newData.child('uid').isString() && newData.child('uid').val() === auth.uid && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 24",
+          "uid": {
+            ".validate": "newData.isString()"
+          },
+          "name": {
+            ".validate": "newData.isString()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "level": {
+          ".validate": "newData.val() === 'easy' || newData.val() === 'medium' || newData.val() === 'hard'"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber() && newData.val() > 0"
+        },
+        "presence": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid && (root.child('rooms/' + $room + '/host/uid').val() === auth.uid || root.child('rooms/' + $room + '/guest/uid').val() === auth.uid)",
+            ".validate": "newData.val() === true"
+          }
+        },
+        "game": {
+          ".write": "auth != null && ((root.child('rooms/' + $room + '/host/uid').val() === auth.uid && ((data.child('phase').val() === 'waiting' && root.child('rooms/' + $room + '/guest/uid').exists()) || data.child('phase').val() === 'finished' || (data.child('phase').val() === 'playing' && (data.child('turn').val() === 'host' || data.child('opened/1').exists())))) || (root.child('rooms/' + $room + '/guest/uid').val() === auth.uid && data.child('phase').val() === 'playing' && (data.child('turn').val() === 'guest' || data.child('opened/1').exists())))",
+          ".validate": "newData.hasChildren(['phase', 'turn', 'deck', 'moves', 'scores', 'startedAt', 'resolveAt', 'lastMatch']) && (newData.child('phase').val() === 'waiting' || newData.child('phase').val() === 'playing' || newData.child('phase').val() === 'finished') && (newData.child('turn').val() === 'host' || newData.child('turn').val() === 'guest') && newData.child('scores/host').isNumber() && newData.child('scores/guest').isNumber() && newData.child('scores/host').val() >= 0 && newData.child('scores/guest').val() >= 0",
+          "phase": {
+            ".validate": "newData.val() === 'waiting' || newData.val() === 'playing' || newData.val() === 'finished'"
+          },
+          "turn": {
+            ".validate": "newData.val() === 'host' || newData.val() === 'guest'"
+          },
+          "deck": {
+            ".validate": "newData.child('0').exists() && !newData.child('24').exists()",
+            "$index": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 12"
+            }
+          },
+          "moves": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "scores": {
+            ".validate": "newData.hasChildren(['host', 'guest'])",
+            "host": {
+              ".validate": "newData.isNumber() && newData.val() >= 0"
+            },
+            "guest": {
+              ".validate": "newData.isNumber() && newData.val() >= 0"
+            },
+            "$other": {
+              ".validate": false
+            }
+          },
+          "opened": {
+            ".validate": "!newData.child('2').exists()",
+            "$index": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 24"
+            }
+          },
+          "matched": {
+            "$index": {
+              ".validate": "newData.val() === true"
+            }
+          },
+          "resolveAt": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "startedAt": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "lastMatch": {
+            ".validate": "newData.isBoolean()"
+          },
+          "winner": {
+            ".validate": "newData.val() === '' || newData.val() === 'host' || newData.val() === 'guest' || newData.val() === 'tie'"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  }
+}
